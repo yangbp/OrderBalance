@@ -1,0 +1,30 @@
+@AbapCatalog.sqlViewName: 'ZBV_KO_MA_LST_V'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Production Order Costing'
+define view ZBV_KO_MA_LST_DDL
+  with parameters
+    p_gjper :jahrper
+  as select from    ZBV_KO_LST_DDL(p_gjper:$parameters.p_gjper) as _ko
+    inner join      aufk                                        as _aufk on _aufk.aufnr = _ko.aufnr
+    inner join      afpo                                        as _afpo on _afpo.aufnr = _ko.aufnr
+
+    left outer join ZBV_KO_SUM_DDL(p_gjper:$parameters.p_gjper) as _cp   on  _cp.aufnr = _ko.aufnr
+                                                                         and _cp.gjper = _ko.fiscyearper
+                                                                         and _cp.bukrs = _ko.bukrs
+
+{
+  _ko.aufnr,
+  _ko.bukrs,
+  _ko.fiscyearper as gjper,
+  _aufk.auart,
+  _afpo.matnr,
+  _aufk.ktext,
+  _aufk.idat2,
+  _cp.hslt_cp     as HSL_CHK,
+  _cp.hsl_i       as HSL_CP_I,
+  _cp.hsl_o       as HSL_CP_O,
+  _cp.hsl_w       as HSL_CP_W
+
+}
