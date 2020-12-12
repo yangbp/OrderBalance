@@ -1,0 +1,11 @@
+@EndUserText.label : 'Product Costing G/L account'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+@AbapCatalog.tableCategory : #TRANSPARENT
+@AbapCatalog.deliveryClass : #C
+@AbapCatalog.dataMaintenance : #ALLOWED
+define table ztcopc_gl {
+  key mandt : mandt not null;
+  key cate  : char1 not null;
+  key saknr : saknr not null;
+
+}
