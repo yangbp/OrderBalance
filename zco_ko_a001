@@ -1,0 +1,54 @@
+*&---------------------------------------------------------------------*
+*& Report zfi_corr_a001
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zco_ko_a001.
+TABLES: t001,bkpf,ska1,aufk.
+DATA: gt_koma  TYPE TABLE OF  zbv_ko_ma_lst_v,
+      gt_sumcp TYPE TABLE OF  zbv_ko_sum_v.
+
+DATA: gt_output TYPE TABLE OF zstr_ko_a001_alv.
+
+
+FIELD-SYMBOLS: <fs_koma>   TYPE zbv_ko_ma_lst_v,
+               <fs_sumcp>  TYPE zbv_ko_sum_v,
+               <fs_output> TYPE zstr_ko_a001_alv.
+
+DATA: gr_alv       TYPE REF TO cl_salv_table,
+      gr_functions
+        TYPE REF TO cl_salv_functions_list.
+
+DATA: lr_layout TYPE REF TO cl_salv_layout,
+      ls_key    TYPE salv_s_layout_key.
+SELECT-OPTIONS: s_bukrs FOR bkpf-bukrs,
+                s_aufnr FOR aufk-saknr.
+
+PARAMETERS: p_gjper LIKE acdoca-fiscyearper .
+
+START-OF-SELECTION.
+* select data in internal table
+
+  SELECT * INTO CORRESPONDING FIELDS OF TABLE @gt_koma
+         FROM  zbv_ko_ma_lst_v( p_gjper = @p_gjper )
+         WHERE  bukrs IN @s_bukrs
+                  AND aufnr IN @s_aufnr .
+
+  LOOP AT gt_koma ASSIGNING <fs_koma>.
+    APPEND INITIAL LINE TO gt_output ASSIGNING <fs_output>.
+    MOVE-CORRESPONDING <fs_koma> TO <fs_output>.
+  ENDLOOP.
+
+* create the ALV object
+  cl_salv_table=>factory(
+    IMPORTING
+      r_salv_table   = gr_alv
+    CHANGING
+      t_table        = gt_output
+         ).
+
+* set default set of generic functions
+  gr_functions = gr_alv->get_functions( ).
+  gr_functions->set_all( ).
+* display it!
+  gr_alv->display( ).
