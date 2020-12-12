@@ -1,0 +1,17 @@
+@EndUserText.label : 'KO A001 Output'
+@AbapCatalog.enhancementCategory : #NOT_CLASSIFIED
+define structure zstr_ko_a001_alv {
+  aufnr    : aufnr;
+  bukrs    : bukrs;
+  matnr    : matnr;
+  ktext    : auftext;
+  @Semantics.amount.currencyCode : 't001.waers'
+  hsl_cp_i : zhslcpi;
+  @Semantics.amount.currencyCode : 't001.waers'
+  hsl_cp_w : zhslcpw;
+  @Semantics.amount.currencyCode : 't001.waers'
+  hsl_cp_o : zhslcpo;
+  @Semantics.amount.currencyCode : 't001.waers'
+  hsl_chk  : zhslchk;
+
+}
