@@ -1,0 +1,25 @@
+@AbapCatalog.sqlViewName: 'ZBV_ACDOCA_KO_V'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Production Order Balance'
+define view ZBV_ACDOCA_KO_DDL
+  as select from acdoca    as _acdoca
+    inner join   ztcopc_gl as _gl on _gl.saknr = _acdoca.racct
+{
+  _acdoca.rbukrs                                 as bukrs,
+  _acdoca.gjahr,
+  _acdoca.belnr,
+  _acdoca.docln,
+  _acdoca.buzei,
+  _acdoca.awref,
+  _acdoca.awitem,
+  _acdoca.fiscyearper                            as gjper,
+  _acdoca.aufnr,
+  _acdoca.racct,
+  _acdoca.hsl,
+  case  when _gl.cate = 'I' then _acdoca.hsl end as hsl_i,
+  case  when _gl.cate = 'W' then _acdoca.hsl end as hsl_w,
+  case  when _gl.cate = 'O' then _acdoca.hsl end as hsl_o
+
+}
