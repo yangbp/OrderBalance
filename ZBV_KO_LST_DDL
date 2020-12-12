@@ -1,0 +1,23 @@
+@AbapCatalog.sqlViewName: 'ZBV_KO_LST_V'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'Orders with actual posting'
+define view ZBV_KO_LST_DDL
+  with parameters
+    p_gjper :jahrper
+  as select from acdoca as _acdoca
+{
+  _acdoca.aufnr,
+  _acdoca.gjahr,
+  _acdoca.rbukrs as bukrs,
+  _acdoca.fiscyearper,
+  count(*)       as records
+}
+where
+  fiscyearper = :p_gjper
+group by
+  _acdoca.aufnr,
+  _acdoca.gjahr,
+  _acdoca.rbukrs,
+  _acdoca.fiscyearper
