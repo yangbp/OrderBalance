@@ -1,0 +1,28 @@
+@AbapCatalog.sqlViewName: 'ZBV_KO_SUM_V'
+@AbapCatalog.compiler.compareFilter: true
+@AbapCatalog.preserveKey: true
+@AccessControl.authorizationCheck: #CHECK
+@EndUserText.label: 'WO  Period Transaction total'
+define view ZBV_KO_SUM_DDL
+  with parameters
+    p_gjper :jahrper
+  as select from ZBV_KO_LST_DDL(p_gjper:$parameters.p_gjper) as _ko
+    inner join   ZBV_ACDOCA_KO_DDL                           as _AKO on  _AKO.aufnr = _ko.aufnr
+                                                                     and _AKO.gjper = _ko.fiscyearper
+
+{
+  _ko.aufnr,
+  _ko.bukrs,
+  _ko.fiscyearper as gjper,
+  sum(_AKO.hsl)   as hslt_cp,
+  sum(_AKO.hsl_i) as hsl_i,
+  sum(_AKO.hsl_w) as hsl_w,
+  sum(_AKO.hsl_o) as hsl_o
+
+}
+where
+  _AKO.gjper = :p_gjper
+group by
+  _ko.aufnr,
+  _ko.bukrs,
+  _ko.fiscyearper
